@@ -1,0 +1,22 @@
+datasplit
+  ->  01_train
+	->  01_Basic
+	->  02_Pure
+  ->  02_test
+	->  01_Basic
+	->  02_Pure
+
+Experiment_02
+  ->  01_train
+	->  01_Basic
+	->  02_Pure
+  ->  02_test
+	->  01_Basic
+	->  02_Pure
+  ->  Rohdaten
+	->  basic_niederndorf
+	->  pure_raubling
+  ->  Rohdaten(Kopie)
+
+
+
