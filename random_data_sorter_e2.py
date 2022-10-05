@@ -8,7 +8,7 @@ from datetime import datetime
 # Diese Funktion sortiert Dateien aus dem Ordner all_data in die Ordner Testdaten und Trainingsdaten um             #   
 #                
 # 
-#           Für Experiment 2!!!!
+#           Für Experiment 2 (also nur 2 Klassen (Basic und Pure)!!!!
 #                                                                                                                   #
 # Wichtig:  Die Namen der Ordner sind in der Liste "products" anzugeben und müssen identisch zu den Ordnern sein.   #
 #           Bei "ratio" wird der Anteil der Trainingsdaten in Prozent angegeben                                     #

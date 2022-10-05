@@ -31,10 +31,8 @@ print("Trainset: ", trainset)
 print()
 print("Testset: ", testset)
 
-
 import matplotlib.pyplot as plt
 import numpy as np
-
 
 # functions to show an image
 def imshow(img):
@@ -43,11 +41,9 @@ def imshow(img):
     plt.imshow(np.transpose(npimg, (1, 2, 0)))
     plt.show()
 
-
 # get some random training images
 dataiter = iter(trainloader)
 images, labels = dataiter.next()
-
 
 # print labels
 print()
@@ -58,7 +54,6 @@ print(''.join('Class(Train): 'f'{classes[labels[j]]:5s}\n' for j in range(batch_
 
 import torch.nn as nn
 import torch.nn.functional as F
-
 
 # Define Neural Network
 class Net(nn.Module):
@@ -93,9 +88,7 @@ class Net(nn.Module):
         x = F.relu(self.fc2(x))        
         x = self.fc3(x)
 
-        
         return x
-
 
 net = Net()
 print(net)
