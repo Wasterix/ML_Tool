@@ -3,7 +3,7 @@ import csv
 
 #####################################################################################################################
 #                                                                                                                   #
-# Diese Funktion erstellt eine Liste aller Dateien eines Ordners Ordners                                                 #   
+# Diese Funktion erstellt eine Liste aller Dateien eines Ordners Ordners Test                                                #   
 #           Sie wurde geschrieben, um eine Liste von Testdaten dokumentarisch festzuhalten                          #
 #           Dies gewährleistet Reproduzierbarkeit und Verlgeichbarkeit verschiedener Experimente                    #
 #                                                                                                                   #
