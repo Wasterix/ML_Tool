@@ -46,10 +46,10 @@ for i in products:
 
     print(i,"Start!!!")
     # Speichern von Pfad, Ordner und Dateien in Variablen (path, dirs, files)
-    fehler = os.walk(folder_path_source)
+    source = os.walk(folder_path_source)
     #print("Fehler: ", fehler)
     
-    path, dirs, files = next(fehler)
+    path, dirs, files = next(source)
     file_count = len(files)
 
     """     # Wähle Prozentsatz der Trainingsdaten, Rest sind Testdaten
@@ -73,14 +73,14 @@ for i in products:
             print("Target:", target_file)
 
             
-            shutil.move(source_file, target_file)
+            #shutil.move(source_file, target_file)
             #shutil.copy(source, target)
         else:
             source_file = str(folder_path_source) + "/" + str(train_files_random[k])
             target_file2 = str(target_path_test) + "/" + str(train_files_random[k])
             #print("Source:", source)
             #print("Target2:", target)
-            shutil.move(source_file, target_file2)
+            #shutil.move(source_file, target_file2)
             #shutil.copy(source, target2)  
     print(i,"Ready!!!") 
     
