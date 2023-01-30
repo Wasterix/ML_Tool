@@ -4,6 +4,11 @@ import os
 import glob
 import time
 
+# 1. Produktlinie (Kompakt, Modular, Ofen, Multischublade, Kühlschrank)
+# 2. Modell (Basic, Pure, XBo .. etc)
+# 3. Konfiguration (Tepan, Induktion...)
+# Ausgabe 
+
 url="https://customvision128-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/839631ab-2f69-48ad-8862-f19a66b642e4/classify/iterations/Iteration3/image"
 headers={'content-type':'application/octet-stream','Prediction-Key':'c78a0bdcf9c44619978e659c1d9d0968'}
 
@@ -38,7 +43,7 @@ for image_path in image_paths:
     elif py_pred_01["tagName"] == "02_Pure":
         counter_02 = counter_02 + 1
 
-    threshold = 0.5
+    threshold = 0.9
     if py_pred_01["probability"] > threshold:
         print("Glückwunsch, Sie haben ein", py_pred_01["tagName"], "!!")
     else:
