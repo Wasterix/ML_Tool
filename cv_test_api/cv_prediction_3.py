@@ -19,7 +19,7 @@ import time
 #       url             = Inhalt in Box
 #       content-type    = Inhalt rechts von "Content-Type"
 #       Prediction-Key  = Inhalt rechts von "Prediction-Key"
-url="https://customvision128-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/d4255628-b067-4daf-b398-557fdbb481e4/classify/iterations/Iteration1/image"
+url="https://customvision128-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/839631ab-2f69-48ad-8862-f19a66b642e4/classify/iterations/Iteration3/image"
 content_type = 'application/octet-stream'
 prediction_key = 'c78a0bdcf9c44619978e659c1d9d0968'
 
@@ -79,9 +79,9 @@ for folder_path in folder_paths:
         df = df.reindex(columns=['tagName', 'probability'])
 
         #m = df['01_Basic']
-        m = df.loc[df['tagName'] == '01_basic']
+        m = df.loc[df['tagName'] == '01_Basic']
         m = m.iloc[0,1]
-        n = df.loc[df['tagName'] == '02_pure']
+        n = df.loc[df['tagName'] == '02_Pure']
         n = n.iloc[0,1]
 
         pred = bool

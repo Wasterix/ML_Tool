@@ -55,3 +55,4 @@ for image_path in image_paths:
     print()
 print("Anzahl Basic im Test: ", counter_01)
 print("Anzahl Pure im Test: ", counter_02)
+

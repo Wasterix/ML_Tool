@@ -19,7 +19,7 @@ import time
 #       url             = Inhalt in Box
 #       content-type    = Inhalt rechts von "Content-Type"
 #       Prediction-Key  = Inhalt rechts von "Prediction-Key"
-url="https://customvision128-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/d4255628-b067-4daf-b398-557fdbb481e4/classify/iterations/Iteration1/image"
+url="https://customvision128-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/442ad269-853a-41e9-81b3-7f93466baf47/classify/iterations/Predictor/image"
 content_type = 'application/octet-stream'
 prediction_key = 'c78a0bdcf9c44619978e659c1d9d0968'
 
@@ -27,12 +27,26 @@ prediction_key = 'c78a0bdcf9c44619978e659c1d9d0968'
 headers={'content-type': content_type,'Prediction-Key': prediction_key}
 
 
-# Erstellen einer Tabelle um REST-Response zu sammeln (Mit)
-data = {'File': [], 'Ground Truth': [], 'Prob_01_Basic': [], 'Prob_02_Pure': [], 'Correct Prediction': [], 'Prediction Time': []} 
-result = pd.DataFrame(data, columns=['Filename (.jpg)', 'Ground Truth', 'Probability_01_Basic', 'Probability_02_Pure', 'Correct Prediction', 'Prediction Time [s]'])
+directory = "test_images"
 
 # Ordner für Testbilder
-folder_paths = ['Images/01_basic', 'Images/02_pure']
+class_paths = sorted([d for d in os.listdir(directory) if os.path.isdir(os.path.join(directory, d))])
+
+data = {
+    "Filename": [],
+    "Ground Truth": [],
+}
+data.update({folder_name: [] for folder_name in class_paths})
+data.update({
+    "Correct Prediction": [],
+    "Prediction Time [s]": []
+})
+result = pd.DataFrame.from_dict(data)
+#print(result)
+
+# Erstellen einer Tabelle um REST-Response zu sammeln
+#data = {'File': [], 'Ground Truth': [], 'Prob_01_Basic': [], 'Prob_02_Pure': [], 'Correct Prediction': [], 'Prediction Time': []} 
+#result = pd.DataFrame(data, columns=['Filename (.jpg)', 'Ground Truth', 'Probability_01_Basic', 'Probability_02_Pure', 'Correct Prediction', 'Prediction Time [s]'])
 
 # Startzeit für messen der Gesamtlauftzeit des Skriptes
 start_time_01 = time.time()
@@ -45,11 +59,12 @@ i = 1
 
 # Es sollen nacheinander alle Testbilder der verschiedenen Ordner (Produktlinien/Modelle/Konfigurationen) durchlaufen werden
 # 
-for folder_path in folder_paths:
-    image_paths = glob.glob(os.path.join(folder_path, "*.jpg"))
+for folder_path in class_paths:
+    image_paths = glob.glob(os.path.join(directory,folder_path, "*.jpg"))
+    print("Folder_Path:", folder_path)
+    print(image_paths)
     ground_truth = folder_path.split('/')[-1]
     bad_requests = []
-
 
     t = 0
     for image_path in image_paths: 
@@ -64,7 +79,7 @@ for folder_path in folder_paths:
 
         # Laden des Json Objects als Python Object
         python_object = json.loads(r.content)
-        #print(python_object)
+        print(python_object)
 
         try: 
             df = pd.DataFrame(python_object['predictions'])
@@ -79,10 +94,13 @@ for folder_path in folder_paths:
         df = df.reindex(columns=['tagName', 'probability'])
 
         #m = df['01_Basic']
-        m = df.loc[df['tagName'] == '01_basic']
+        #TODO: tagNames anpassen, Positionen für Pandas anpassen
+        m = df.loc[df['tagName'] == '01_Basic']
         m = m.iloc[0,1]
-        n = df.loc[df['tagName'] == '02_pure']
+        n = df.loc[df['tagName'] == '02_Pure']
         n = n.iloc[0,1]
+
+       
 
         pred = bool
         #print(ground_truth)
