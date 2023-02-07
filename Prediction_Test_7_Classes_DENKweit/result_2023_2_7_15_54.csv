@@ -1,7 +1,0 @@
-Filename,Ground Truth,01_s_pure,02_x_pure,03_pure,04_gp4,05_basic,06_classic20,07_pro3,Correct Prediction,Prediction Time [s]
-Bora_SPure_red,01_s_pure,0.44,0.04,0.24,0.03,0.04,0.0,0.19,False,0.48
-Bora_Basic_Hyper_White,05_basic,0.5,0.06,0.09,0.07,0.18,0.0,0.09,False,0.52
-Bora_Basic_Flächeninduktion_White,05_basic,0.5,0.06,0.09,0.07,0.18,0.0,0.09,False,0.2
-Bora_Basic_Hyper_Black,05_basic,0.13,0.02,0.58,0.05,0.04,0.03,0.16,False,0.49
-bora_classic2,06_classic20,0.01,0.01,0.02,0.01,0.0,0.0,0.96,False,0.34
-bora_professional_3,07_pro3,0.01,0.01,0.02,0.01,0.0,0.0,0.96,False,0.24
