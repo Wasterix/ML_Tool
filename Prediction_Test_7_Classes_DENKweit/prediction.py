@@ -19,9 +19,9 @@ import time
 #       url             = Inhalt in Box
 #       content-type    = Inhalt rechts von "Content-Type"
 #       Prediction-Key  = Inhalt rechts von "Prediction-Key"
-url="https://customvision128-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/442ad269-853a-41e9-81b3-7f93466baf47/classify/iterations/Predictor/image"
+url="https://boraproductionecognition-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/3394056c-7080-4680-869a-a2eae3160578/classify/iterations/Iteration1/image"
 content_type = 'application/octet-stream'
-prediction_key = 'c78a0bdcf9c44619978e659c1d9d0968'
+prediction_key = 'e276b7a116934351be446e1d1ec88477'
 
 # Header werden entsprechend festgelegt
 headers={'content-type': content_type,'Prediction-Key': prediction_key}
@@ -42,7 +42,10 @@ data.update({
     "Prediction Time [s]": []
 })
 result = pd.DataFrame.from_dict(data)
-#print(result)
+
+# iterating the columns
+print(result.columns[3])
+
 
 # Erstellen einer Tabelle um REST-Response zu sammeln
 #data = {'File': [], 'Ground Truth': [], 'Prob_01_Basic': [], 'Prob_02_Pure': [], 'Correct Prediction': [], 'Prediction Time': []} 
@@ -61,13 +64,15 @@ i = 1
 # 
 for folder_path in class_paths:
     image_paths = glob.glob(os.path.join(directory,folder_path, "*.jpg"))
-    print("Folder_Path:", folder_path)
-    print(image_paths)
+    image_paths += glob.glob(os.path.join(directory,folder_path, "*.png"))
+    #print("Folder_Path:", folder_path)
+    #print(image_paths)
+    # Bestimmen der Ground_Truth um später die Prediction zu prüfen
     ground_truth = folder_path.split('/')[-1]
     bad_requests = []
 
     t = 0
-    for image_path in image_paths: 
+    for image_path in image_paths:
         print()
         print("Gerätnummer:", i)
         print(image_path)
@@ -76,10 +81,14 @@ for folder_path in class_paths:
 
         start_time = time.time()
         r =requests.post(url,data=open(image_path,"rb"),headers=headers)
+        #print(r)
 
         # Laden des Json Objects als Python Object
         python_object = json.loads(r.content)
-        print(python_object)
+        #print(python_object)
+        
+
+
 
         try: 
             df = pd.DataFrame(python_object['predictions'])
@@ -93,36 +102,86 @@ for folder_path in class_paths:
         
         df = df.reindex(columns=['tagName', 'probability'])
 
+        """       for product in result.columns[2:9]:
+                    print("Wahrscheinlichkeit für Produkt", product, "ist ... Prozent")
+                    
+                    print(df.loc[df[product] == ground_truth])
+                    exit()
+
+                    m01 = df.loc[df[product] == ground_truth]
+                    m01 = m01.iloc[0,1]
+                    print(m01)
+
+                    if m01 > threshold and ground_truth == product:
+                        pred = True
+                    else: 
+                        pred = False
+                    #TODO Peng mit den Wahrscheinlichkeiten füllen
+                    peng = []
+
+ 
+                    
+                    print("Ground Truth:", ground_truth)
+
+                    exit()
+        result.loc[len(result.index)] = [image_path_last, ground_truth, peng, pred, elapsed_time]
+        exit() """
         #m = df['01_Basic']
         #TODO: tagNames anpassen, Positionen für Pandas anpassen
-        m = df.loc[df['tagName'] == '01_Basic']
-        m = m.iloc[0,1]
-        n = df.loc[df['tagName'] == '02_Pure']
-        n = n.iloc[0,1]
+        # 01_s_pure, 02_x_pure, 03_pure, 04_gp4, 05_basic, 06_classic20, 07_pro3
 
-       
 
+        #print(df)
+        m01 = df.loc[df['tagName'] == '01_s_pure']
+        m01 = m01.iloc[0,1]
+        m02 = df.loc[df['tagName'] == '02_x_pure']
+        m02 = m02.iloc[0,1]
+        m03 = df.loc[df['tagName'] == '03_pure']
+        m03 = m03.iloc[0,1]
+        m04 = df.loc[df['tagName'] == '04_gp4']
+        m04 = m04.iloc[0,1]
+        m05 = df.loc[df['tagName'] == '05_basic']
+        m05 = m05.iloc[0,1]
+        m06 = df.loc[df['tagName'] == '06_classic20']
+        m06 = m06.iloc[0,1]
+        m07 = df.loc[df['tagName'] == '07_pro3']
+        m07 = m07.iloc[0,1]
+        
+
+
+
+
+
+        """ print(m01)
+        print(m02)
+        print(m03)
+        print(m04)
+        print(m05)
+        print(m06)
+        print(m07) """
+      
+        
         pred = bool
         #print(ground_truth)
         #print(m)
         #print(n)
         #print(pred)
 
-        if m > threshold and m > n and ground_truth == '01_basic':
+        if m01 > threshold and m01 > m02 and ground_truth == '01_s_pure':
             pred = True
-        elif n > threshold and m < n and ground_truth == '02_pure':
+        elif m01 > threshold and m01 < m02 and ground_truth == '02_x_pure':
             pred = True
         else:
             pred = False
 
+        
         end_time = time.time()
         elapsed_time = end_time - start_time
-        print("Die Vorhersage dauerte {} Sekunden".format(round(elapsed_time,2)))
+        #print("Die Vorhersage dauerte {} Sekunden".format(round(elapsed_time,2)))
 
         #print("Die Vorhersage dauerte {} Sekunden".format(round(elapsed_time,2)))
-        result.loc[len(result.index)] = [image_path_last, ground_truth, m, n, pred, elapsed_time]
+        result.loc[len(result.index)] = [image_path_last, ground_truth, m01, m02, m03, m04, m05, m06, m07, pred, elapsed_time]
         #print(result)
-
         # Extrahieren der Wahrscheinlichkeiten für Basic und Pure aus dem Python Object
         # TODO: Fehlermeldung
         try: 
@@ -165,3 +224,5 @@ print('Time Total:', elapsed_time_02)
 year, month, day, hour, min = map(int, time.strftime("%Y %m %d %H %M").split())
 filename = 'result_' + str(year)+"_" +str(month)+"_" +str(day)+"_" +str(hour)+"_" +str(min) + ".csv"
 result.to_csv(filename, index=False)
+
+#TODO: If = bla main (chatbot fragen)
