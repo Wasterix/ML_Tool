@@ -60,7 +60,6 @@ threshold = 0.4
 i = 1
 
 # Es sollen nacheinander alle Testbilder der verschiedenen Ordner (Produktlinien/Modelle/Konfigurationen) durchlaufen werden
-# 
 for folder_path in class_paths:
     #TODO: Wenn in Dateinamen Punkt vor kommt, zum Beispiel "Professional_3.0.jpg", dann wird das nicht erkannt
     image_paths = glob.glob(os.path.join(directory,folder_path, "*.jpg"))
@@ -97,47 +96,22 @@ for folder_path in class_paths:
         
         df = df.reindex(columns=['tagName', 'probability'])
 
-        m01 = df.loc[df['tagName'] == '01_s_pure']
-        m01 = m01.iloc[0,1]
-        m02 = df.loc[df['tagName'] == '02_x_pure']
-        m02 = m02.iloc[0,1]
-        m03 = df.loc[df['tagName'] == '03_pure']
-        m03 = m03.iloc[0,1]
-        m04 = df.loc[df['tagName'] == '04_gp4']
-        m04 = m04.iloc[0,1]
-        m05 = df.loc[df['tagName'] == '05_basic']
-        m05 = m05.iloc[0,1]
-        m06 = df.loc[df['tagName'] == '06_classic20']
-        m06 = m06.iloc[0,1]
-        m07 = df.loc[df['tagName'] == '07_pro3']
-        m07 = m07.iloc[0,1]
+        tags = ['01_s_pure', '02_x_pure', '03_pure', '04_gp4', '05_basic', '06_classic20', '07_pro3']
+        m = [df.loc[df['tagName'] == tag].iloc[0,1] for tag in tags]
         
-        pred = bool
-        
-        #TODO: pred anpassen
-        if m01 > threshold and ground_truth == '01_s_pure':
-            pred = True
-        elif m02 > threshold and ground_truth == '02_x_pure':
-            pred = True
-        elif m03 > threshold and ground_truth == '03_pure':
-            pred = True
-        elif m04 > threshold and ground_truth == '04_gp4':
-            pred = True
-        elif m05 > threshold and ground_truth == '05_basic':
-            pred = True
-        elif m06 > threshold and ground_truth == '06_classic20':
-            pred = True
-        elif m07 > threshold and ground_truth == '07_pro3':
-            pred = True    
-        else:
-            pred = False
+        pred = False
+
+        for m_val, tag in zip(m, tags):
+            if m_val > threshold and ground_truth == tag:
+                pred = True
+                break
 
         end_time = time.time()
         elapsed_time = end_time - start_time
 
         #print("Die Vorhersage dauerte {} Sekunden".format(round(elapsed_time,2)))
-        result.loc[len(result.index)] = [image_path_last, ground_truth, m01, m02, m03, m04, m05, m06, m07, pred, elapsed_time]
-        #print(result)
+        result.loc[len(result.index)] = [image_path_last, ground_truth, *m, pred, elapsed_time]
+
         # Extrahieren der Wahrscheinlichkeiten für Basic und Pure aus dem Python Object
         # TODO: Fehlermeldung
         try: 
@@ -148,14 +122,6 @@ for folder_path in class_paths:
             bad_requests.append(image_path)
         py_pred_01 = python_predictions[0]
         py_pred_02 = python_predictions[1]
-
-        #print("Vorhersage für: ", image_path)
-        #print("Response: ", r.content)
-        #print(py_pred_01["tagName"], "hat Wahrscheinlichkeit", round(py_pred_01["probability"], 2))
-        #print(py_pred_02["tagName"], "hat Wahrscheinlichkeit", round(py_pred_02["probability"], 2))
-        #print("Probability für Pure: ", round(py_pred_02_pure["probability"], 2))
-
-
 
         if py_pred_01["probability"] > threshold:
             print("Glückwunsch, Sie haben ein", py_pred_01["tagName"], "!!")
@@ -181,6 +147,8 @@ print('Time Total:', elapsed_time_02)
 
 year, month, day, hour, min = map(int, time.strftime("%Y %m %d %H %M").split())
 filename = 'result_' + str(year)+"_" +str(month)+"_" +str(day)+"_" +str(hour)+"_" +str(min) + ".csv"
+
+
 result.to_csv(filename, index=False)
 
 #TODO: If = bla main (chatbot fragen)
